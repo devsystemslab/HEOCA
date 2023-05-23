@@ -9,7 +9,7 @@ https://docs.nvidia.com/deploy/cuda-compatibility/index.html.
 
 Next, install OTT-JAX using:
 ```
-pip install ott-jax==0.3.1
+pip install ott-jax
 ```
 Lastly, navigate to your `moscot_not` directory (which Merel has to provide) and install the package and its dependencies using:
 ```
