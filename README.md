@@ -15,4 +15,8 @@ Lastly, navigate to your `moscot_not` directory (which Merel has to provide) and
 ```
 pip install -e .
 ```
+If you get the following error, try upgrading pip first:
+``` 
+ERROR: File "setup.py" or "setup.cfg" not found.
+```
 Now, your environment contains all the packages (including `anndata`, `scanpy` and plotting libraries) needed to run the OT notebooks.
