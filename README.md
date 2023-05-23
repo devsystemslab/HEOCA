@@ -1,6 +1,6 @@
 # HEOA
 
-On a machine with a GPU, please install JAX in a virtual environment using the following command, which will ALSO install a compatible CUDA toolkit:
+On a Linux machine with a GPU, please install JAX in a virtual environment using the following command, which will ALSO install a compatible CUDA toolkit:
 ```
 pip install --upgrade "jax[cuda11_pip]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 ```
