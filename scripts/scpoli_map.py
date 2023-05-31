@@ -22,17 +22,17 @@ from sklearn.metrics.pairwise import cosine_similarity
 from scarches.dataset.trvae.data_handling import remove_sparsity
 from scarches.models.scpoli import scPoli
 
-
 import gseapy
-
 import umap
 
 # sys.path.append('/home/xuq44/git/')
 # import util_single_cell.scripts.py_util as qsc
+WD = "/mnt/atlas_building"
 
 def read_samples(project_dir, sample_sheet, annot_dir):
     adata_list=[]
     for sample in sample_sheet.sample_id:
+        # TODO
         sample_file=f"{project_dir}/h5ad_pyraw/{sample}_pyraw.h5ad"
         adata0 = sc.read_h5ad(sample_file)
         adata0.obs['sample_id'] = sample
@@ -124,7 +124,7 @@ def run_scvi(adata, method='scANVI'):
 
         return adata
 
-def run_scpoli(adata):
+def get_kwargs():
     early_stopping_kwargs = {
         "early_stopping_metric": "val_prototype_loss",
         "mode": "min",
@@ -134,6 +134,10 @@ def run_scpoli(adata):
         "lr_patience": 13,
         "lr_factor": 0.1,
     }
+    return early_stopping_kwargs
+
+def train_scpoli(adata):
+    early_stopping_kwargs = get_kwargs()
 
     scpoli_model = scPoli(
         adata=adata,
@@ -152,18 +156,26 @@ def run_scpoli(adata):
         alpha_epoch_anneal=100
     )
 
-    adata.obsm["X_scPoli"] = scpoli_model.get_latent(
-        adata.X, 
-        adata.obs["sample_id"].values,
-        mean=True
-    )
-    sc.pp.neighbors(adata, use_rep="X_scPoli")
-    sc.tl.leiden(adata)
-    sc.tl.umap(adata, min_dist=0.1)
-    adata.obsm['X_umap_min'] = adata.obsm['X_umap'].copy()
-    sc.tl.umap(adata)
+    return scpoli_model
 
-    return adata
+def map_query(adata, model):
+    early_stopping_kwargs = get_kwargs()
+
+    scpoli_query = scPoli.load_query_data(
+        adata=adata,
+        reference_model=model,
+        labeled_indices=[],
+    )
+
+    scpoli_query.train(
+        n_epochs=5,
+        pretraining_epochs=4,
+        early_stopping_kwargs=early_stopping_kwargs,
+        eta=10,
+        alpha_epoch_anneal=100
+    )
+
+    return scpoli_query
 
 def umap_quan(adata, use_rep=None):
     if use_rep==None:
@@ -183,114 +195,83 @@ def umap_transform_quan(adata_ref, adata_que):
     
     return adata_all
 
+if __name__ == "__main__":
+    ## establish reference model
+    project_dir = os.path.join(WD, "data")
+    # TODO
+    annotation = "sample_annot"
+    annot_dir = f"{project_dir}/{annotation}/"
 
-## establsih reference model
-project_dir = "/home/xuq44/projects/hgioa/data/results/organoid_samples_summary"
-annotation="sample_annot5"
-sample_sheet = pd.read_csv(f"{project_dir}/intestine_tissues_samples.txt", sep="\t")
+    adata = sc.read(os.path.join(project_dir, "Assembled10DomainsEpithelial.h5ad"))
+    adata = clear_genes(adata)
+    adata.obs['level_1'] = 'epithelial'
+    adata.obs['level_2'] = 'na'
+    adata.obs['sample_id'] = adata.obs['donor'].copy()
+    sc.pp.highly_variable_genes(adata, n_top_genes=3000, batch_key='sample_id')
+    adata = adata[:,adata.var.highly_variable]
 
-annot_dir = f"{project_dir}/{annotation}/"
-adata = read_samples(project_dir, sample_sheet, annot_dir)
-adata = clear_genes(adata)
-adata = adata[adata.obs.level_1=='epithelial']
-adata = pre_inti(adata)
+    scpoli_model = train_scpoli(adata)
 
-early_stopping_kwargs = {
-    "early_stopping_metric": "val_prototype_loss",
-    "mode": "min",
-    "threshold": 0,
-    "patience": 20,
-    "reduce_lr": True,
-    "lr_patience": 13,
-    "lr_factor": 0.1,
-}
+    adata.obsm["X_scPoli"] = scpoli_model.get_latent(
+        adata.X,
+        adata.obs["sample_id"].values,
+        mean=True
+    )
 
-scpoli_model = scPoli(
-    adata=adata,
-    unknown_ct_names=['na'],
-    condition_key='sample_id',
-    cell_type_keys=['level_1', 'level_2'],
-    embedding_dim=3,
-    hidden_layer_sizes=[int(np.sqrt(adata.shape[0]))]
-)
+    sc.pp.neighbors(adata, use_rep="X_scPoli")
+    sc.tl.leiden(adata)
+    sc.tl.umap(adata, min_dist=0.1)
+    # adata.obsm['X_umap_min'] = adata.obsm['X_umap'].copy()
+    # sc.tl.umap(adata)
 
-scpoli_model.train(
-    n_epochs=5,
-    pretraining_epochs=4,
-    early_stopping_kwargs=early_stopping_kwargs,
-    eta=10,
-    alpha_epoch_anneal=100
-)
+    ## map organoid data to reference
+    sample_sheet = pd.read_csv(f"{project_dir}/all_samples_sheets.txt", sep="\t")
+    sample_sheet = sample_sheet[sample_sheet.tissue=='lung']
+    # sample_sheet = sample_sheet.head(20)
+    adata0 = read_samples(project_dir, sample_sheet, annot_dir)
+    adata0.obs['level_1'] = 'epithelial'
+    adata0.obs['level_2'] = 'na'
+    adata0 = pre_inti0(adata0)
+    adata0 = adata0[:,adata.var.index]
 
-adata.obsm["X_scPoli"] = scpoli_model.get_latent(
-    adata.X, 
-    adata.obs["sample_id"].values,
-    mean=True
-)
+    scpoli_query = map_query(adata0, scpoli_model)
+    results_dict = scpoli_query.classify(adata0.X, adata0.obs["sample_id"].values)
 
-sc.pp.neighbors(adata, use_rep="X_scPoli")
-sc.tl.umap(adata)
+    # get latent representation of reference data
+    scpoli_query.model.eval()
+    data_latent_source = scpoli_query.get_latent(
+        adata.X,
+        adata.obs["sample_id"].values,
+        mean=True
+    )
 
+    adata_latent_source = sc.AnnData(data_latent_source)
+    adata_latent_source.obs = adata.obs.copy()
 
-## map organoid data to reference
-sample_sheet = pd.read_csv(f"{project_dir}/all_samples_sheets.txt", sep="\t")
-sample_sheet = sample_sheet[sample_sheet.tissue=='intestine']
-# sample_sheet = sample_sheet.head(20)
-adata0 = read_samples(project_dir, sample_sheet, annot_dir)
-adata0 = adata0[adata0.obs.level_1=='epithelial']
-adata0 = pre_inti0(adata0)
-adata0 = adata0[:,adata.var.index]
+    # get latent representation of query data
+    data_latent= scpoli_query.get_latent(
+        adata0.X,
+        adata0.obs["sample_id"].values,
+        mean=True
+    )
 
-scpoli_query = scPoli.load_query_data(
-    adata=adata0,
-    reference_model=scpoli_model,
-    labeled_indices=[],
-)
+    adata_latent = sc.AnnData(data_latent)
+    adata_latent.obs = adata0.obs.copy()
 
-scpoli_query.train(
-    n_epochs=5,
-    pretraining_epochs=4,
-    early_stopping_kwargs=early_stopping_kwargs,
-    eta=10,
-    alpha_epoch_anneal=100
-)
-results_dict = scpoli_query.classify(adata0.X, adata0.obs["sample_id"].values)
+    # get label annotations
+    adata_latent.obs['cell_type_pred'] = results_dict['level_2']['preds'].tolist()
+    adata_latent.obs['cell_type_uncert'] = results_dict['level_2']['uncert'].tolist()
+    adata_latent.obs['classifier_outcome'] = (
+        adata_latent.obs['cell_type_pred'] == adata_latent.obs['level_2']
+    )
 
-#get latent representation of reference data
-scpoli_query.model.eval()
-data_latent_source = scpoli_query.get_latent(
-    adata.X, 
-    adata.obs["sample_id"].values,
-    mean=True
-)
+    #get prototypes
+    labeled_prototypes = scpoli_query.get_prototypes_info()
+    labeled_prototypes.obs['study'] = 'labeled prototype'
+    unlabeled_prototypes = scpoli_query.get_prototypes_info(prototype_set='unlabeled')
+    unlabeled_prototypes.obs['study'] = 'unlabeled prototype'
 
-adata_latent_source = sc.AnnData(data_latent_source)
-adata_latent_source.obs = adata.obs.copy()
-
-#get latent representation of query data
-data_latent= scpoli_query.get_latent(
-    adata0.X, 
-    adata0.obs["sample_id"].values,
-    mean=True
-)
-
-adata_latent = sc.AnnData(data_latent)
-adata_latent.obs = adata0.obs.copy()
-
-#get label annotations
-adata_latent.obs['cell_type_pred'] = results_dict['level_2']['preds'].tolist()
-adata_latent.obs['cell_type_uncert'] = results_dict['level_2']['uncert'].tolist()
-adata_latent.obs['classifier_outcome'] = (
-    adata_latent.obs['cell_type_pred'] == adata_latent.obs['level_2']
-)
-
-#get prototypes
-labeled_prototypes = scpoli_query.get_prototypes_info()
-labeled_prototypes.obs['study'] = 'labeled prototype'
-unlabeled_prototypes = scpoli_query.get_prototypes_info(prototype_set='unlabeled')
-unlabeled_prototypes.obs['study'] = 'unlabeled prototype'
-
-adata_latent_source = umap_quan(adata_latent_source)
-adata_latent = umap_transform_quan(adata_latent_source, adata_latent)
+    adata_latent_source = umap_quan(adata_latent_source)
+    adata_latent = umap_transform_quan(adata_latent_source, adata_latent)
 
 
