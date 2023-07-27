@@ -2,6 +2,9 @@ import os
 import sys
 import argparse
 
+import umap
+import pickle
+
 import numpy as np
 import pandas as pd
 import torch
@@ -22,10 +25,6 @@ from sklearn.metrics.pairwise import cosine_similarity
 from scarches.dataset.trvae.data_handling import remove_sparsity
 from scarches.models.scpoli import scPoli
 
-sys.path.append('/home/xuq44/git/')
-import util_single_cell.scripts.py_util as qsc
-
-
 def read_samples(project_dir, sample_sheet, annot_dir):
     adata_list=[]
     for sample in sample_sheet.sample_id:
@@ -44,14 +43,10 @@ def read_samples(project_dir, sample_sheet, annot_dir):
 
         adata_list.append(adata0)
     adata = anndata.AnnData.concatenate(*adata_list, join='outer', fill_value=0)
+    del adata_list
     adata.obs['publication'] = ['_'.join(i.split('_')[:3]) for i in adata.obs.sample_id.tolist()]
 
     adata.obs.index.name = "cells"
-    
-    # adata.obs['publication'] = ["_".join(i.split('_')[:3]) for i in adata.obs.sample_id.tolist()]
-    # adata = qsc.add_yu_meta_data(adata)
-    # adata.obs = adata.obs.drop(columns=['Selected_for_epi_comparison_with_tHIO_and_vivo'])
-    # adata.obs.Cell_type.fillna('na', inplace=True)
 
     return adata
     
@@ -82,10 +77,9 @@ def pre_inti(adata, project_name):
                 sep="\t", index_col=0).index.tolist()
         adata = adata[:, [i for i in variable_genes if i in adata.var.index]]
     else:
-        sc.pp.highly_variable_genes(adata, n_top_genes=3000, batch_key='sample_id')
+        sc.pp.highly_variable_genes(adata, n_top_genes=2000, batch_key='sample_id')
         adata = adata[:,adata.var.highly_variable]
-    # sc.pp.scale(adata)
-    # sc.tl.pca(adata, svd_solver='arpack')
+
     return adata
 
 def run_merge(adata):
@@ -111,7 +105,7 @@ def run_scvi(adata, method='scANVI'):
         lvae = scvi.model.SCANVI.from_scvi_model(
             vae,
             adata=adata,
-            labels_key="level_2",
+            labels_key='level_2',
             unlabeled_category="na",
         )
         lvae.train(max_epochs=20, n_samples_per_label=100)
@@ -139,7 +133,7 @@ def run_scpoli(adata):
         adata=adata,
         unknown_ct_names=['na'],
         condition_key='sample_id',
-        cell_type_keys=['level_2'],
+        cell_type_keys=['level_1', 'level_2'],
         embedding_dim=3,
         hidden_layer_sizes=[int(np.sqrt(adata.shape[0]))]
     )
@@ -162,8 +156,9 @@ def run_scpoli(adata):
     sc.tl.umap(adata, min_dist=0.1)
     adata.obsm['X_umap_min'] = adata.obsm['X_umap'].copy()
     sc.tl.umap(adata)
+    adata.obsm['X_umap_sc'] = adata.obsm['X_umap'].copy()
 
-    return adata
+    return scpoli_model, adata
 
 def plot_results(adata, out_folder, project_name, method='scvi', mdist=False):
     if mdist:
@@ -189,6 +184,15 @@ def plot_results(adata, out_folder, project_name, method='scvi', mdist=False):
                             ncols=1, frameon=False, show=False)
                 plt.savefig(f"{out_folder}/figures/{project_name}_{method}_integration.png", dpi=300, bbox_inches='tight')
 
+def mk_new_annot(adata, group_name, level):
+    aa = adata.obs.groupby([group_name, level]).size().reset_index()
+    new_clust_map={}
+
+    for i in aa[group_name].unique():
+        bb = aa[aa[group_name]==i]
+        new_clust_map[i]=bb.loc[bb[0].idxmax()][level]
+
+    adata.obs[f'{level}_late'] = adata.obs[group_name].map(new_clust_map)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -197,27 +201,32 @@ if __name__ == "__main__":
     parser.add_argument('-a', '--annotation', required=True, help='annotation folder')
     parser.add_argument('-o', '--out_dir', required=True, help='out dir')
     parser.add_argument('-p', '--project_dir', default="/home/xuq44/projects/hgioa/data/results/organoid_samples_summary")
+    parser.add_argument('-b', '--benchmarker', default=False, action=argparse.BooleanOptionalAction)
+
     o = parser.parse_args()
 
     out_folder = f"{o.project_dir}/results/{o.out_dir}"
     os.system(f"mkdir -pv {out_folder}/figures")
+    os.system(f"mkdir -pv {out_folder}/{o.project_name}_scpoli_model")
     ccgenes_file = f'{o.project_dir}/regev_lab_cell_cycle_genes.txt'
 
     sample_sheet = pd.read_csv(f"{o.project_dir}/all_samples_sheets.txt", sep="\t")
+    
+    # Random select samples for benchmarker
+    if o.benchmarker:
+        sample_sheet = sample_sheet.sample(10, random_state=0)
+
     if o.project_name=='gut':
         sample_sheet = sample_sheet
     if o.project_name=='intestine':
         sample_sheet = sample_sheet[sample_sheet.tissue=='intestine']
     if o.project_name=='lung':
         sample_sheet = sample_sheet[sample_sheet.tissue=='lung']
-    if o.project_name=='liver_bileduck':
-        sample_sheet = sample_sheet[sample_sheet.tissue.isin(['liver', 'bileduck'])]
+    if o.project_name=='liver_bileduct':
+        sample_sheet = sample_sheet[sample_sheet.tissue.isin(['liver', 'bileduct'])]
     if o.project_name=='pancreas':
         sample_sheet = sample_sheet[sample_sheet.tissue.isin(['pancreas'])]
       
-    # sample_sheet = sample_sheet[sample_sheet.sample_id.isin([
-    #                                                      'Holloway_CellStemCell_2021_hITD_NRG1_day132_S95',
-    #                                                      'Yu_Cell_2021_H9_tHIO_WK8'])]
     annot_dir = f"{o.project_dir}/{o.annotation}/"
     adata = read_samples(o.project_dir, sample_sheet, annot_dir)
     adata = clear_genes(adata)
@@ -242,34 +251,52 @@ if __name__ == "__main__":
         plot_results(adata, out_folder, o.project_name, method='scanvi', mdist=True)
         adata.write_h5ad(f"{out_folder}/{o.project_name}_scanvi_integration2.h5ad", compression="gzip")
 
+    if o.inti_method == 'merge':
+        os.system(f"mkdir -pv {out_folder}/{o.project_name}_merge")
+        adata.write_h5ad(f"{out_folder}/{o.project_name}_merge/{o.project_name}_merge.h5ad", 
+                            compression="gzip")
+
     if o.inti_method == 'scpoli':
         adata = pre_inti(adata, o.project_name)
 
-        adata = qsc.add_sample_info(adata)
-        adata = qsc.add_fetal_map_info(adata, o.project_dir)
+        scpoli_model, adata = run_scpoli(adata)
 
+        ref_path = f'{out_folder}/{o.project_name}_scpoli_model/scpoli_model/'
+        scpoli_model.save(ref_path, overwrite=True)
 
-        # adata = adata[(adata.obs.Mapped_fetal_organ=='Intestine') &
-        #                (adata.obs.detail_tissue!='colon')]
+        ## make empty adata for query to have the same genes
+        empty_adata=sc.pp.filter_cells(adata, max_counts=-1, copy=True)
+        empty_adata.obs=pd.DataFrame()
+        empty_adata.var=pd.DataFrame(empty_adata.var.index).rename(columns={0:'cells'}).set_index('cells')
+        del(empty_adata.uns)
+        del(empty_adata.obsm)
+        del(empty_adata.obsp)
+        del(empty_adata.layers)
+        empty_adata.write_h5ad(f"{out_folder}/{o.project_name}_scpoli_model/empty.h5ad", 
+                                    compression="gzip")
 
-        adata = run_scpoli(adata)
+        ## save scpoli results
+        data_latent_source = adata.obsm["X_scPoli"]
+        adata_latent_source = sc.AnnData(data_latent_source)
+        adata_latent_source.obs = adata.obs.copy()
 
-        plot_results(adata, out_folder, o.project_name, method='scpoli', mdist=False)
-        adata.write_h5ad(f"{out_folder}/{o.project_name}_scpoli_integration.h5ad", 
+        model = umap.UMAP(n_neighbors=15, random_state=0, min_dist=0.5).fit(adata_latent_source.X)
+        adata_latent_source.obsm['X_umap'] = model.embedding_
+        adata.obsm['X_umap'] = model.embedding_
+
+        adata_latent_source.write_h5ad(f"{out_folder}/{o.project_name}_scpoli_model/adata_latent_source.h5ad", 
+                                    compression="gzip")
+
+        pickle.dump(model, open(f"{out_folder}/{o.project_name}_scpoli_model/umap_model.sav", 'wb'))
+
+        sc.tl.leiden(adata, resolution=10, key_added='leiden_10.0')
+
+        mk_new_annot(adata, 'leiden_10.0', 'level_1')
+        mk_new_annot(adata, 'leiden_10.0', 'level_2')
+        mk_new_annot(adata, 'leiden_10.0', 'level_3')
+
+        adata.obs[['level_1_late', 'level_2_late', 'level_3_late']].to_csv(f"{out_folder}/{o.project_name}_scpoli_model/{o.project_name}_scpoli_late_annot.txt",
+                        sep='\t')
+
+        adata.write_h5ad(f"{out_folder}/{o.project_name}_scpoli_model/{o.project_name}_scpoli_integration.h5ad", 
                             compression="gzip")
-        os.system(f"/home/xuq44/scratch/miniconda3/envs/scpy/bin/cbImportScanpy \
-                    -i {out_folder}/{o.project_name}_scpoli_integration.h5ad \
-                    -o {out_folder}/{o.project_name}_scpoli \
-                    --htmlDir={out_folder}/{o.project_name}_scpoli/www")
-        
-
-
-        # adata_mes = adata[adata.obs.level_1=='mesenchymal'].copy()
-        # adata_mes = run_pca(adata_mes)
-        # adata_mes = run_scpoli(adata_mes)
-        # adata_mes.write_h5ad(f"{out_folder}/{o.project_name}_mes_scpoli_2level_integration.h5ad", compression="gzip")
-
-        # adata_epi = adata[adata.obs.level_1=='epithelial'].copy()
-        # adata_epi = run_pca(adata_epi)
-        # adata_epi = run_scpoli(adata_epi)
-        # adata_epi.write_h5ad(f"{out_folder}/{o.project_name}_epi_scpoli_2level_integration.h5ad", compression="gzip")
