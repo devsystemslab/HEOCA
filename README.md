@@ -14,8 +14,8 @@ Organoids of the endoderm can recapitulate aspects of developing and adult human
 * [wilcoxauc (single cell Wilcoxon rank sum test and auROC analysis)](https://github.com/bioqxu/wilcoxauc)
 
 ## Analytic reproducibility
-* integration
-* analysis
+* [Code for integration](https://github.com/devsystemslab/HEOCA/tree/main/scripts)
+* [Code for plot](https://github.com/devsystemslab/HEOCA/tree/main/notebooks)
 
 ## Citation
 Q
