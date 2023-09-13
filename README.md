@@ -6,10 +6,23 @@ Organoids of the endoderm can recapitulate aspects of developing and adult human
 ![](figures/fig1.png)
 
 ## Cell browser
-* [HEOCA-Human Endoderm-derived Organoids Cell Atlas](https://cellxgene.cziscience.com/collections/6282a908-f162-44a2-99a3-8a942e4271b2)
-* [HEOCA-Human Intestine Organoids Cell Atlas](https://cellxgene.cziscience.com/e/776a1e4a-f141-49bb-9978-d0588a4cee9f.cxg)
-* [HEOCA-Human Lung Organoids Cell Atlas](https://cellxgene.cziscience.com/e/569bce19-14c3-436f-bebf-543e5ea025dc.cxg)
 
+* [HEOCA-Human Endoderm-derived Organoids Cell Atlas](https://cellxgene.cziscience.com/collections/6282a908-f162-44a2-99a3-8a942e4271b2)
+<p float="left">
+<img src="figures/heoca.png" width="300" />
+</p>
+
+* [HEOCA-Human Intestine Organoids Cell Atlas](https://cellxgene.cziscience.com/e/776a1e4a-f141-49bb-9978-d0588a4cee9f.cxg)
+<p float="left">
+<img src="figures/hioca.png" width="300" />
+</p>
+
+* [HEOCA-Human Lung Organoids Cell Atlas](https://cellxgene.cziscience.com/e/569bce19-14c3-436f-bebf-543e5ea025dc.cxg)
+<p float="left">
+<img src="figures/hloca.png" width="300" />
+</p>
+
+ 
 ## Key methods
 * [snapspeed (hierarchy cell type annotation)](https://github.com/devsystemslab/snapseed)
 * [sc2heoca (query new organoid scRNA-seq data to HEOCA)](https://github.com/devsystemslab/sc2heoca)
@@ -20,7 +33,7 @@ Organoids of the endoderm can recapitulate aspects of developing and adult human
 * [Code for plot](https://github.com/devsystemslab/HEOCA/tree/main/notebooks)
 
 ## Citation
-Q
+* Quan Xu, ..., Gray Camp. Integrated transcriptomic cell atlas of human endoderm-derived organoids. 2023.
 
 ## Help and support
 * The preferred way to get support is through the [Github issues page](https://github.com/devsystemslab/HEOCA/issues).
