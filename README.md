@@ -7,17 +7,17 @@ Organoids of the endoderm can recapitulate aspects of developing and adult human
 
 ## Cell browser
 
-* [HEOCA-Human Endoderm-derived Organoids Cell Atlas](https://cellxgene.cziscience.com/collections/6282a908-f162-44a2-99a3-8a942e4271b2)
+* [HEOCA-Human Endoderm-derived Organoids Cell Atlas](https://cellxgene.cziscience.com/e/6725ee8e-ef5b-4e68-8901-61bd14a1fe73.cxg/)
 <p float="left">
 <img src="figures/heoca.png" width="100" />
 </p>
 
-* [HEOCA-Human Intestine Organoids Cell Atlas](https://cellxgene.cziscience.com/e/776a1e4a-f141-49bb-9978-d0588a4cee9f.cxg)
+* [HEOCA-Human Intestine Organoids Cell Atlas](https://cellxgene.cziscience.com/e/776a1e4a-f141-49bb-9978-d0588a4cee9f.cxg/)
 <p float="left">
 <img src="figures/hioca.png" width="100" />
 </p>
 
-* [HEOCA-Human Lung Organoids Cell Atlas](https://cellxgene.cziscience.com/e/569bce19-14c3-436f-bebf-543e5ea025dc.cxg)
+* [HEOCA-Human Lung Organoids Cell Atlas](https://cellxgene.cziscience.com/e/569bce19-14c3-436f-bebf-543e5ea025dc.cxg/)
 <p float="left">
 <img src="figures/hloca.png" width="100" />
 </p>
