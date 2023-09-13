@@ -10,14 +10,14 @@ Organoids of the endoderm can recapitulate aspects of developing and adult human
 
 <table border="0">
  <tr>
-    <td><b style="font-size:30px">HEOCA(Endoderm)</b></td>
-    <td><b style="font-size:30px">HEOCA(Intestine)</b></td>
-    <td><b style="font-size:30px">HEOCA(Lung)</b></td>
+    <td><a href="https://cellxgene.cziscience.com/e/6725ee8e-ef5b-4e68-8901-61bd14a1fe73.cxg/" </a> <b style="font-size:20px">HEOCA(Endoderm)</b></td>
+    <td><a href="https://cellxgene.cziscience.com/e/776a1e4a-f141-49bb-9978-d0588a4cee9f.cxg/" </a> <b style="font-size:20px">HEOCA(Intestine)</b></td>
+    <td><a href="https://cellxgene.cziscience.com/e/569bce19-14c3-436f-bebf-543e5ea025dc.cxg/" </a> <b style="font-size:20px">HEOCA(Lung)</b></td>
  </tr>
  <tr>
-    <td><a href="https://cellxgene.cziscience.com/e/6725ee8e-ef5b-4e68-8901-61bd14a1fe73.cxg/"><img src="figures/heoca.png" width="100" /></img></a></td>
-    <td><a href="https://cellxgene.cziscience.com/e/776a1e4a-f141-49bb-9978-d0588a4cee9f.cxg/"><img src="figures/hioca.png" width="100" /></img></a></td>
-    <td><a href="https://cellxgene.cziscience.com/e/569bce19-14c3-436f-bebf-543e5ea025dc.cxg/"><img src="figures/hloca.png" width="100" /></img></a></td>
+    <td><a href="https://cellxgene.cziscience.com/e/6725ee8e-ef5b-4e68-8901-61bd14a1fe73.cxg/"><img src="figures/heoca.png" width="200" /></img></a></td>
+    <td><a href="https://cellxgene.cziscience.com/e/776a1e4a-f141-49bb-9978-d0588a4cee9f.cxg/"><img src="figures/hioca.png" width="200" /></img></a></td>
+    <td><a href="https://cellxgene.cziscience.com/e/569bce19-14c3-436f-bebf-543e5ea025dc.cxg/"><img src="figures/hloca.png" width="200" /></img></a></td>
  </tr>
 </table>
 
