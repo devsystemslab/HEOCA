@@ -1,0 +1,149 @@
+biliarysystem	#A73030
+intestine	#91D1C2
+liver	#8F7700
+lung	#F39B7F
+pancreas	#B09C85
+prostate	#4A6990
+salivarygland	#3B3B3B
+stomach	#DC0000
+thyroid	#7E6148
+epithelial	#0073C2
+mesenchymal	#a3e3af
+neural	#868686
+endothelial	#CD534C
+immune	#c251a1
+stem cells	#225805
+enterocytes	#ED496F
+stromal 2 (NPY)	#e4b974
+colonocytes	#FFB300
+goblet cells	#8e3101
+cycling stromal cells	#47edd1
+Interstitial cells of Cajal (ICC)	#f47a92
+smooth muscle cells (SMC)	#2d62a3
+mesoderm 1 (HAND1)	#9106eb
+pericytes	#573794
+Microfold cells	#f82745
+mesoderm 2 (ZEB2)	#6435e0
+schwann cell	#027ffe
+basal cells	#16f648
+ciliated cells	#1c15bc
+enteroendocrine cells	#F7DC6F
+mesothelial cells	#7DCEA0
+neuron	#058ca9
+tuft cells	#9e018a
+cycling endothelial cells	#bdfd0b
+stromal 1 (ADAMDEC1)	#b22760
+lymphatic endothelium	#2bf49f
+paneth cells	#cb9348
+biliary cells	#43A047
+mLTo cells	#46adaf
+BEST4+ epithelial	#870f0f
+club cells	#795548
+alveolar type 1 (AT1) cells	#85C1E9
+stellate cells	#ead9d5
+thyrocytes	#CDDC39
+pit cells	#8D6E63
+ductal cells	#6300b5
+pancreatic cells	#012824
+neck cells	#a347fb
+neuroendocrine cells	#eb1388
+cardiovascular cells	#fe52cf
+alveolar type 2 (AT2) cells	#f1f847
+chief cells	#6c6f15
+hepatocytes	#7788cd
+beta cells	#0dc290
+acinar cells	#3caa0a
+kupffer cells	#08f8eb
+stromal 3 (C7)	#5deb2e
+stromal 4 (MMP1)	#d6a5fa
+arterial	#ab1eba
+capillary	#054ddc
+mLN stromal	#854f49
+portal endothelial	#3a0e43
+central endothelial	#37d160
+airway secretory cells	#a8bade
+epsilon cells	#c76cde
+alpha cells	#d7fdfd
+delta cells	#8be46e
+luminal cells	#e68fc6
+quiescent cells	#6ea3fa
+fibroblast	#1c3854
+mature enterocytes	#c21df3
+mature colonocytes	#537f88
+myofibroblasts	#f2d71e
+enterocyte precursors	#12401F
+MUC2- goblet cells	#5536D5
+immature pericytes	#D2B993
+M/X cells	#DED8CE
+RGS5 pericytes	#CC4285
+younger goblet cells	#C3EACA
+portal hepatocytes	#E42859
+central hepatocytes	#86564A
+enterochromaffin cells	#55F97A
+colonocyte precursors	#4AA08F
+D cells	#9006E9
+N cells	#1354E2
+L cells	#4C51A5
+older goblet cells	#D2BB71
+BEST2 goblet cells	#D257D7
+K cells	#D93329
+angiogenic pericytes	#24BB35
+SMC 1 (PLPP2)	#C9A580
+PRG4 pericytes	#6E9979
+contractile pericytes	#64652F
+I cells	#946262
+Enterocyte	#ED496F
+Enteroendocrine	#F7DC6F
+Enterocyte_precursor	#1f77b4
+Goblet	#8e3101
+M_cell	#f82745
+Stem_cell	#225805
+Tuft	#9e018a
+colon	#465982
+duodenal	#90D8AF
+ileum	#F8871A
+IPS	#4DBBD5
+tIPS	#00A087
+FSC	#8491B4
+FSC early	#003C67
+FSC late	#3C5488
+ASC	#E64B35
+PSC	#4DBBD5
+tPSC	#00A087
+spleen	#7AA6DC
+thymus	#EFC000
+Vascular endothelial cells	#3E35B7
+Stromal cells	#A2C8EB
+Intestinal epithelial cells	#CC7DA5
+Myeloid cells	#AE4DDD
+Lymphoid cells	#8A479A
+ENS neurons	#388CAF
+ENS glia	#C93476
+Smooth muscle cells	#2B7BC5
+Chromaffin cells	#A466A4
+Lymphatic endothelial cells	#4E564B
+Mesothelial cells	#9A384B
+Erythroblasts	#B0803A
+Hepatoblasts	#A8575E
+Stellate cells	#6C8F44
+Hematopoietic stem cells	#73CFC0
+Megakaryocytes	#89DB96
+Bronchiolar and alveolar epithelial cells	#C02DDC
+Ciliated epithelial cells	#405A93
+Neuroendocrine cells	#8F4646
+Squamous epithelial cells	#486EF5
+Visceral neurons	#A2E2AE
+CSH1_CSH2 positive cells	#61E190
+Acinar cells	#BAA8E4
+Ductal cells	#FF7300
+Islet endocrine cells	#FD4C7A
+CCL19_CCL21 positive cells	#B423DF
+STC2_TLX1 positive cells	#52B720
+AFP_ALB positive cells	#8F6DAD
+Goblet cells	#9D9B9B
+Parietal and chief cells	#FFA900
+MUC13_DMBT1 positive cells	#886573
+PDE1C_ACSM3 positive cells	#C05E3F
+Thymocytes	#3C5939
+Antigen presenting cells	#844F4A
+Thymic epithelial cells	#867164

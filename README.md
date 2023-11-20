@@ -1,22 +1,43 @@
-# HEOA
+# HEOCA: Human Endoderm-derived Organoids Cell Atlas
 
-On a Linux machine with a GPU, please install JAX in a virtual environment using the following command, which will ALSO install a compatible CUDA toolkit:
-```
-pip install --upgrade "jax[cuda11_pip]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
-```
-Make sure your machine's drivers meet the minimum required driver version:
-https://docs.nvidia.com/deploy/cuda-compatibility/index.html.
+## Integrated human cell atlas of endoderm-derived organoids 
+Organoids of the endoderm can recapitulate aspects of developing and adult human physiology. Organoids derived from embryonic or induced pluripotent stem cells model development and are guided to specific tissue types via morphogens, whereas organoids derived from tissue-resident fetal or adult stem cells are organ-identity-determined and may model ontogenetic features. However, it has remained difficult to assess the similarity and differences between organoid protocols, and to understand the precision and accuracy of organoid cell states through comparison with primary counterparts. Advances in computational single-cell biology allow the comprehensive integration of datasets with high technical variability. Here, we integrate published single-cell transcriptome datasets from organoids of diverse endoderm-derived tissues including lung, pancreas, intestine, salivary glands, liver, biliary system, stomach, and prostate to establish an initial version of a human endoderm organoid cell atlas (HEOCA). The integration includes nearly one million cells across diverse conditions and data sources. We align and compare cell types and states between organoid models, and harmonize cell type annotations by mapping the atlas to primary tissue counterparts. We focus on intestine and lung, and clarify developmental and adult physiology that can be modeled in vitro. We provide examples of data incorporation from new organoid protocols to expand the atlas, and showcase how comparison to the atlas can illuminate interesting biological features of new datasets. We also show that mapping disease organoid single-cell samples to HEOCA identifies shifts in cell proportion and gene expressions between normal and diseased cells. Taken together, the atlas makes diverse datasets centrally available (https://cellxgene.cziscience.com/), and it will be useful to assess organoid fidelity, characterize perturbed and diseased states, streamline protocol development, and will continuously grow in the future. 
 
-Next, install OTT-JAX using:
-```
-pip install ott-jax
-```
-Lastly, navigate to your `moscot_not` directory (which Merel has to provide) and install the package and its dependencies using:
-```
-pip install -e .
-```
-Please note that `moscot_not` requires Python 3.9. If you get the following error, try upgrading pip first:
-``` 
-ERROR: File "setup.py" or "setup.cfg" not found.
-```
-Now, your environment contains all the packages (including `anndata`, `scanpy` and plotting libraries) needed to run the OT notebooks.
+![](figures/fig1.png)
+
+## Cell browser
+
+
+<table border="0">
+ <tr>
+    <td align="center"><a href="https://cellxgene.cziscience.com/e/6725ee8e-ef5b-4e68-8901-61bd14a1fe73.cxg/" </a> <b style="font-size:20px">HEOCA(Endoderm)</b></td>
+    <td align="center"><a href="https://cellxgene.cziscience.com/e/776a1e4a-f141-49bb-9978-d0588a4cee9f.cxg/" </a> <b style="font-size:20px">HEOCA(Intestine)</b></td>
+    <td align="center"><a href="https://cellxgene.cziscience.com/e/569bce19-14c3-436f-bebf-543e5ea025dc.cxg/" </a> <b style="font-size:20px">HEOCA(Lung)</b></td>
+ </tr>
+ <tr>
+    <td><a href="https://cellxgene.cziscience.com/e/6725ee8e-ef5b-4e68-8901-61bd14a1fe73.cxg/"><img src="figures/heoca.png" width="200" /></img></a></td>
+    <td><a href="https://cellxgene.cziscience.com/e/776a1e4a-f141-49bb-9978-d0588a4cee9f.cxg/"><img src="figures/hioca.png" width="200" /></img></a></td>
+    <td><a href="https://cellxgene.cziscience.com/e/569bce19-14c3-436f-bebf-543e5ea025dc.cxg/"><img src="figures/hloca.png" width="200" /></img></a></td>
+ </tr>
+</table>
+
+ 
+## Key methods
+* [snapspeed (hierarchy cell type annotation)](https://github.com/devsystemslab/snapseed)
+* [sc2heoca (query new organoid scRNA-seq data to HEOCA)](https://github.com/devsystemslab/sc2heoca)
+* [wilcoxauc (single cell Wilcoxon rank sum test and auROC analysis)](https://github.com/bioqxu/wilcoxauc)
+
+## Analytic reproducibility
+* [Code for integration](https://github.com/devsystemslab/HEOCA/tree/main/scripts)
+* [Code for plot](https://github.com/devsystemslab/HEOCA/tree/main/notebooks)
+
+## Citation
+* Quan Xu, ..., Gray Camp. Integrated transcriptomic cell atlas of human endoderm-derived organoids. 2023.
+
+## Help and support
+* The preferred way to get support is through the [Github issues page](https://github.com/devsystemslab/HEOCA/issues).
+
+## License
+- **[MIT license](http://opensource.org/licenses/mit-license.php)** 
+- Copyright 2023 © <a href="https://github.com/devsystemslab" target="_blank">devsystemslab</a>.
+
