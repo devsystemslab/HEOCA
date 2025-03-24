@@ -14,18 +14,12 @@ Organoids of the endoderm can recapitulate aspects of developing and adult human
     <td align="center"><a href="https://cellxgene.cziscience.com/e/776a1e4a-f141-49bb-9978-d0588a4cee9f.cxg/" </a> <b style="font-size:20px">HEOCA(Intestine)</b></td>
     <td align="center"><a href="https://cellxgene.cziscience.com/e/569bce19-14c3-436f-bebf-543e5ea025dc.cxg/" </a> <b style="font-size:20px">HEOCA(Lung)</b></td>
  </tr>
- <tr>
-    <td><a href="https://cellxgene.cziscience.com/e/6725ee8e-ef5b-4e68-8901-61bd14a1fe73.cxg/"><img src="figures/heoca.png" width="200" /></img></a></td>
-    <td><a href="https://cellxgene.cziscience.com/e/776a1e4a-f141-49bb-9978-d0588a4cee9f.cxg/"><img src="figures/hioca.png" width="200" /></img></a></td>
-    <td><a href="https://cellxgene.cziscience.com/e/569bce19-14c3-436f-bebf-543e5ea025dc.cxg/"><img src="figures/hloca.png" width="200" /></img></a></td>
- </tr>
 </table>
 
  
 ## Key methods
 * [snapspeed (hierarchy cell type annotation)](https://github.com/devsystemslab/snapseed)
 * [sc2heoca (query new organoid scRNA-seq data to HEOCA)](https://github.com/devsystemslab/sc2heoca)
-* [wilcoxauc (single cell Wilcoxon rank sum test and auROC analysis)](https://github.com/bioqxu/wilcoxauc)
 
 ## Analytic reproducibility
 * [Code for integration](https://github.com/devsystemslab/HEOCA/tree/main/scripts)
