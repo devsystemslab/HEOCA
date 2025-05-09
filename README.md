@@ -18,7 +18,7 @@ Organoids of the endoderm can recapitulate aspects of developing and adult human
 
  
 ## Key methods
-* [snapspeed (hierarchy cell type annotation)](https://github.com/devsystemslab/snapseed)
+* [snapseed (hierarchy cell type annotation)](https://github.com/devsystemslab/snapseed)
 * [sc2heoca (query new organoid scRNA-seq data to HEOCA)](https://github.com/devsystemslab/sc2heoca)
 
 ## Analytic reproducibility
